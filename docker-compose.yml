@@ -1,0 +1,34 @@
+services:
+  stack_overflow_back_service:
+    container_name: "stack_overflow_back"
+    build:
+      context: .
+    ports:
+      - "7777:8000"
+    networks:
+      - myNetwork
+    env_file:
+      - .env
+    depends_on:
+      - db
+
+  db:
+    image: postgres:13
+    container_name: "stack_overflow_db"
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: ${DB_PASS}
+      POSTGRES_DB: my_stack_overflow_db
+    ports:
+      - "5432:5432"
+    networks:
+      - myNetwork
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+networks:
+  myNetwork:
+    external: true
+
+volumes:
+  postgres_data:
